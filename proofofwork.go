@@ -71,15 +71,16 @@ func (pow *ProofOfWork) Run() ([]byte,uint64){ //[]byte是hash，uint64是nonce
 			//   +1 if x >  y
 		if tmpInt.Cmp(pow.target) == -1 {
 			//a.找到了，返回
-			fmt.Printf("挖矿成功！hash: %x\t,nonce %x\n", hash, nonce)
-			break
+			fmt.Printf("挖矿成功！hash: %x\tnonce: %x\n", hash, nonce)
+			//break
+			return hash[:], nonce
+
 		}else{
 			//b.未找到，nonce+1继续找
 			nonce++
 		}
 	}
 
-	return hash[:], nonce
 }
 //4.提供校验函数
 //

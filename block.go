@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"encoding/binary"
+	"encoding/gob"
 	"log"
 	"time"
 )
@@ -46,17 +47,53 @@ func Uint64ToByte(num uint64) []byte{
 	//return Bytes
 }
 
+//辅助函数，将数据转换为字节流
+//序列化函数
+func (block *Block) Serialize() []byte{
+	//定义存储编码的数据的buffer
+	var buffer bytes.Buffer
+	//使用god进行序列化（编码）得到字节流
+	//1.定义一个编码器
+	encoder := gob.NewEncoder(&buffer)
+	//2.使用编码器进行编码
+	err := encoder.Encode(&block)
+	if err != nil {
+		log.Panic("编码出错")
+	}
+
+	//输出编码后的数据
+	//fmt.Printf("编码后的数据： %v\n",buffer.Bytes())
+
+	return buffer.Bytes()
+}
+
+
+//反序列化函数
+func Deserialize(data []byte) Block {
+	//定义解码器
+	decoder := gob.NewDecoder(bytes.NewReader(data))
+
+	var block Block
+	//使用解码器进行解码
+	err := decoder.Decode(&block)
+	if err != nil {
+		log.Panic("解码出错")
+	}
+
+	return block
+}
+
 //2.创建区块
 func NewBlock(data string,prevBlockHash []byte) *Block{
 	block := Block{
-		Version: 00,
-		PrevHash: prevBlockHash,
+		Version: 	00,
+		PrevHash: 	prevBlockHash,
 		MerkelRoot: []byte{},
-		TimeStamp: uint64(time.Now().Unix()),
+		TimeStamp: 	uint64(time.Now().Unix()),
 		Difficulty: 0,  //随便填写的无效值
-		Nonce: 0,
-		Hash: []byte{},//先填空，之后计算
-		Data: []byte(data),
+		Nonce: 		0,
+		Hash: 		[]byte{},//先填空，之后计算
+		Data: 		[]byte(data),
 	}
 	//block.SetHash() 此种方法是固定计算，应该改为使用pow的run函数动态计算
 	pow := NewProofOfWork(&block)
