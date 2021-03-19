@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"crypto/sha256"
-	"fmt"
 	"math/big"
 )
 
@@ -19,7 +18,7 @@ type ProofOfWork struct {
 
 //2.提供创建POW的函数
 //NewProofOfWork(参数)
-func NewProofOfWork(block *Block) *ProofOfWork{
+func NewProofOfWork(block *Block) *ProofOfWork {
 	pow := ProofOfWork{
 		block : block,
 	}
@@ -52,7 +51,7 @@ func (pow *ProofOfWork) Run() ([]byte,uint64){ //[]byte是hash，uint64是nonce
 			Uint64ToByte(block.TimeStamp),
 			Uint64ToByte(block.Difficulty),
 			Uint64ToByte(nonce),
-			block.Data,
+			//block.Data,
 		}
 		blockInfo := bytes.Join(tmp,[]byte{})
 
@@ -71,7 +70,7 @@ func (pow *ProofOfWork) Run() ([]byte,uint64){ //[]byte是hash，uint64是nonce
 			//   +1 if x >  y
 		if tmpInt.Cmp(pow.target) == -1 {
 			//a.找到了，返回
-			fmt.Printf("挖矿成功！hash: %x\tnonce: %x\n", hash, nonce)
+			//fmt.Printf("挖矿成功！hash: %x\tnonce: %x\n", hash, nonce)
 			//break
 			return hash[:], nonce
 

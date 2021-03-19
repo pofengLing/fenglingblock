@@ -22,9 +22,9 @@ func (bc *BlockChain) NewIterator() *BlockChainIterator {
 //迭代器it属于区块链
 //next方法属于迭代器
 //1.返回当前区块  2.指针前移
-func (it *BlockChainIterator) Next() *Block{
+func (it *BlockChainIterator) Next() *Block {
 	var block Block
-	it.db.View(func(tx *bolt.Tx) error{
+	it.db.View(func(tx *bolt.Tx) error {
 		bucket := tx.Bucket([]byte(blockBucket))
 		if bucket == nil {
 			log.Panic("迭代器更新时bucket不应该为空，请检查")

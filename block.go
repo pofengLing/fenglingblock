@@ -24,10 +24,12 @@ type Block struct {
 	//6.随机数（挖矿要找的数据）
 	Nonce uint64
 
-	//a.当前区块哈希
+	//a.当前区块哈希  正常比特币区块中没有当前区块哈希
 	Hash []byte
 	//b.数据
-	Data []byte
+	//Data []byte
+	//真实交易数组
+	Transactions []*Transaction
 }
 
 //辅助函数，将uint转为[]byte
@@ -84,17 +86,18 @@ func Deserialize(data []byte) Block {
 }
 
 //2.创建区块
-func NewBlock(data string,prevBlockHash []byte) *Block{
+func NewBlock(txs []*Transaction,prevBlockHash []byte) *Block {
 	block := Block{
-		Version: 	00,
-		PrevHash: 	prevBlockHash,
-		MerkelRoot: []byte{},
-		TimeStamp: 	uint64(time.Now().Unix()),
-		Difficulty: 0,  //随便填写的无效值
-		Nonce: 		0,
-		Hash: 		[]byte{},//先填空，之后计算
-		Data: 		[]byte(data),
+		Version: 		00,
+		PrevHash: 		prevBlockHash,
+		MerkelRoot: 	[]byte{},
+		TimeStamp: 		uint64(time.Now().Unix()),
+		Difficulty: 	0,  //随便填写的无效值
+		Nonce: 			0,
+		Hash: 			[]byte{},//先填空，之后计算
+		Transactions: 	txs,
 	}
+	block.MerkelRoot = block.MakeMerKelRoot()
 	//block.SetHash() 此种方法是固定计算，应该改为使用pow的run函数动态计算
 	pow := NewProofOfWork(&block)
 	//查找随机数不停进行哈希运算
@@ -122,13 +125,13 @@ func (block *Block) SetHash() []byte{
 
 	 //join优化方法
 	 tmp := [][]byte{
-	 	Uint64ToByte(block.Version),
-	 	block.PrevHash,
-	 	block.MerkelRoot,
-	 	Uint64ToByte(block.TimeStamp),
-	 	Uint64ToByte(block.Difficulty),
-	 	Uint64ToByte(block.Nonce),
-	 	block.Data,
+		 Uint64ToByte(block.Version),
+		 block.PrevHash,
+	 	 block.MerkelRoot,
+		 Uint64ToByte(block.TimeStamp),
+		 Uint64ToByte(block.Difficulty),
+		 Uint64ToByte(block.Nonce),
+	 	 //block.Data,
 	 }
 	 blockInfo = bytes.Join(tmp,[]byte{})
 
@@ -137,4 +140,10 @@ func (block *Block) SetHash() []byte{
 	hash := sha256.Sum256(blockInfo)
 	block.Hash = hash[:]
 	return block.Hash
+}
+
+//生成merkel根  模拟实现，只做简单拼接 实际上应该用二叉树实现
+func (block *Block) MakeMerKelRoot() []byte{
+
+	return []byte{}
 }
