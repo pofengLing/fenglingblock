@@ -2,7 +2,7 @@ package main
 
 func main() {
 	//产生区块链
-	bc := NewBlockChain("魄风灵")
+	bc := NewBlockChain("张三")
 	cli := CLI{bc}
 	cli.Run()
 	//bc.AddBlock("我是第002个区块")

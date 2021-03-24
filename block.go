@@ -144,6 +144,11 @@ func (block *Block) SetHash() []byte{
 
 //生成merkel根  模拟实现，只做简单拼接 实际上应该用二叉树实现
 func (block *Block) MakeMerKelRoot() []byte{
-
-	return []byte{}
+	//将所有交易的hash值拼接起来再整体做哈希处理
+	var info []byte
+	for _, tx := range block.Transactions {
+		info = append(info, tx.TXID...)
+	}
+	hash := sha256.Sum256(info)
+	return hash[:]
 }
