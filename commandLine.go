@@ -60,3 +60,22 @@ func (cli *CLI) Send(from, to string, amount float64, miner, data string) {
 	//cli.bc.AddBlock([]*Transaction{tx})
 	fmt.Printf("转账成功！")
 }
+
+func (cli *CLI)NewWallet() {
+	//Wallet := NewWallet()
+	ws := NewWallets()
+	address := ws.CreatWallet()
+
+	fmt.Printf("钱包地址: %v\n", address)
+
+	//fmt.Printf("私钥: %v\n", Wallet.Private)
+	//fmt.Printf("公钥: %v\n", Wallet.pubkey)
+
+}
+func (cli *CLI)ListAddresses() {
+	ws := NewWallets()
+	addresses := ws.ListAllAddresses()
+	for _, address := range addresses{
+		fmt.Printf("%v\n", address)
+	}
+}
